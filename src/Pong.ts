@@ -1,3 +1,4 @@
+import Brick from "./Brick.js";
 import Sprite from "./Sprite.js";
 import Rectangle from "./utility/Rectangle.js";
 import Vector2 from "./utility/Vector2.js";
@@ -25,12 +26,17 @@ export default class Pong {
 
     public ballSprite = new Sprite("ball");
     public paddleSprite = new Sprite("paddle");
-    public brickSprite = new Sprite("brick");
 
     public paddlePos = new Vector2(0, 0);
     public ballPos?: Vector2;
     public ballVelocity = this.getDefaultBallVelocity();
-    public brickPos = new Vector2(200, 200);
+
+    public bricks = [
+        new Brick(new Vector2(200, 200)),
+        new Brick(new Vector2(300, 200)),
+        new Brick(new Vector2(400, 200)),
+        new Brick(new Vector2(500, 200)),
+    ];
 
     public get ballRectangle () {
         return Rectangle.fromCentre(this.ballPos ?? Vector2.ZERO, this.ballSprite.size);
@@ -38,10 +44,6 @@ export default class Pong {
 
     public get paddleRectangle () {
         return Rectangle.fromCentre(this.mousePosition ?? Vector2.ZERO, this.paddleSprite.size);
-    }
-
-    public get brickRectangle () {
-        return Rectangle.fromCentre(this.brickPos ?? Vector2.ZERO, this.brickSprite.size);
     }
 
     private lastOnTop?: "paddle" | "ball";
@@ -125,9 +127,6 @@ export default class Pong {
             }
         }
 
-        //brick intersection
-
-
 
         if (this.ballPos.y - ballRadius > height) {
             //ball death
@@ -137,6 +136,13 @@ export default class Pong {
         paddleCentreY = this.mousePosition?.y ?? 0;
         this.lastOnTop = this.ballPos.y < paddleCentreY ? "ball" : "paddle";
 
+        //brick stuff
+
+        for (const brick of this.bricks) {
+            brick.tryCollide(this);
+        }
+
+        //draw functions
         if (this.ballPos) {
             this.ballSprite.draw(context, ...this.ballPos.xy);
         }
@@ -144,12 +150,11 @@ export default class Pong {
         if (this.mousePosition) {
             this.paddleSprite.draw(context, ...this.mousePosition.xy);
         }
-
-        if (this.brickPos) {
-            this.brickSprite.draw(context, ...this.brickPos.xy);
+        for (const brick of this.bricks) {
+            brick.draw(context);
         }
-        const brickRectangle = this.brickRectangle;
-        this.tryCollideBrick(ballRectangle, brickRectangle);
+
+
 
 
 
@@ -163,45 +168,4 @@ export default class Pong {
         return new Vector2(Math.random() * 10 - 5, -5)
     }
 
-    private intersectingX = false;
-    private intersectingY = false;
-    private tryCollideBrick (ballRectangle: Rectangle, brickRectangle: Rectangle) {
-
-        if (!this.ballPos) return;
-
-        const wasIntersectingX = this.intersectingX;
-        const wasIntersectingY = this.intersectingY;
-
-        this.intersectingX = brickRectangle.intersectsX(ballRectangle);
-        this.intersectingY = brickRectangle.intersectsY(ballRectangle);
-
-
-
-        if (!brickRectangle.intersects(ballRectangle)) {
-            return;
-        }
-        // right side collision
-        if (!wasIntersectingX && ballRectangle.left < brickRectangle.right && this.ballVelocity.x < 0) {
-            this.ballPos.x = brickRectangle.right + ballRectangle.size.x / 2;
-            this.ballVelocity.x *= -1;
-        }
-        // left side collision
-        else if (!wasIntersectingX && ballRectangle.right > brickRectangle.left && this.ballVelocity.x > 0) {
-            this.ballPos.x = brickRectangle.left - ballRectangle.size.x / 2;
-            this.ballVelocity.x *= -1;
-        }
-        // bottom side collision
-        if (!wasIntersectingY && ballRectangle.top < brickRectangle.bottom && this.ballVelocity.y < 0) {
-            this.ballPos.y = brickRectangle.bottom + ballRectangle.size.y / 2;
-            this.ballVelocity.y *= -1;
-        }
-        // top side collision
-        else if (!wasIntersectingY && ballRectangle.bottom > brickRectangle.top && this.ballVelocity.y > 0) {
-            this.ballPos.y = brickRectangle.top - ballRectangle.size.y / 2;
-            this.ballVelocity.y *= -1;
-        }
-
-
-
-    }
 }

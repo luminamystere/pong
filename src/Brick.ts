@@ -1,19 +1,31 @@
 import Pong from "./Pong.js";
 import Sprite from "./Sprite.js";
+import Math2 from "./utility/Math2.js";
 import Rectangle from "./utility/Rectangle.js";
 import Vector2 from "./utility/Vector2.js";
 
 export default class Brick {
 
     //public position = new Vector2(200, 200);
-    public readonly brickSprite = new Sprite("brick");
+    public readonly brickSprites = [
+        new Sprite("brickDamage3"),
+        new Sprite("brickDamage2"),
+        new Sprite("brickDamage1"),
+        new Sprite("brick"),
+    ];
+    public brickHealth = 3;
     public intersectingX = false;
     public intersectingY = false;
 
     // accessors
+    public get brickSprite () {
+        return this.brickSprites[Math2.clamp(0, 3, this.brickHealth)];
+    }
     public get brickRectangle () {
         return Rectangle.fromCentre(this.position ?? Vector2.ZERO, this.brickSprite.size);
     }
+
+
 
     public constructor (public readonly position: Vector2) {
 
@@ -58,5 +70,6 @@ export default class Brick {
             pong.ballPos.y = this.brickRectangle.top - pong.ballRectangle.size.y / 2;
             pong.ballVelocity.y *= -1;
         }
+        this.brickHealth -= 1;
     }
 }

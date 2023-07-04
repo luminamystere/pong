@@ -141,6 +141,7 @@ export default class Pong {
         for (const brick of this.bricks) {
             brick.tryCollide(this);
         }
+        this.bricks = this.bricks.filter(brick => brick.brickHealth > -1);
 
         //draw functions
         if (this.ballPos) {

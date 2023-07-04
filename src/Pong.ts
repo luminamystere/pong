@@ -1,4 +1,5 @@
 import Brick from "./Brick.js";
+import HUD from "./HUD.js";
 import Sprite from "./Sprite.js";
 import Rectangle from "./utility/Rectangle.js";
 import Vector2 from "./utility/Vector2.js";
@@ -47,6 +48,10 @@ export default class Pong {
     }
 
     private lastOnTop?: "paddle" | "ball";
+
+    //score
+    public score = 0;
+    public hud = new HUD();
 
     public render (context: CanvasRenderingContext2D, width: number, height: number) {
 
@@ -154,6 +159,7 @@ export default class Pong {
         for (const brick of this.bricks) {
             brick.draw(context);
         }
+        this.hud.draw(context, this, width, height);
 
 
 

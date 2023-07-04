@@ -40,6 +40,10 @@ class Vector2 implements IVector2 {
     public copyImmutable () {
         return new Vector2.Immutable(this.x, this.y);
     }
+
+    public equals (vector: IVector2) {
+        return this.x === vector.x && this.y === vector.y;
+    }
 }
 
 namespace Vector2 {
@@ -60,6 +64,10 @@ namespace Vector2 {
 
         public copyMutable () {
             return new Vector2(this.x, this.y);
+        }
+
+        public equals (vector: IVector2) {
+            return this.x === vector.x && this.y === vector.y;
         }
     }
 

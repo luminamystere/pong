@@ -16,6 +16,7 @@ export default class Brick {
     public brickHealth = 3;
     public intersectingX = false;
     public intersectingY = false;
+    public brickScore = 100;
 
     // accessors
     public get brickSprite () {
@@ -71,5 +72,10 @@ export default class Brick {
             pong.ballVelocity.y *= -1;
         }
         this.brickHealth -= 1;
+
+        if (this.brickHealth <= -1) {
+            pong.score += this.brickScore;
+            this.brickScore = 0;
+        }
     }
 }

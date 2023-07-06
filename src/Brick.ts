@@ -41,35 +41,35 @@ export default class Brick {
 
     // trycollide function
     public tryCollide (pong: Pong) {
-        if (!pong.ballPos) return;
+        if (!pong.ball.ballPos) return;
 
         const wasIntersectingX = this.intersectingX;
         const wasIntersectingY = this.intersectingY;
-        this.intersectingX = this.brickRectangle.intersectsX(pong.ballRectangle);
-        this.intersectingY = this.brickRectangle.intersectsY(pong.ballRectangle);
+        this.intersectingX = this.brickRectangle.intersectsX(pong.ball.ballRectangle);
+        this.intersectingY = this.brickRectangle.intersectsY(pong.ball.ballRectangle);
 
-        if (!this.brickRectangle.intersects(pong.ballRectangle)) {
+        if (!this.brickRectangle.intersects(pong.ball.ballRectangle)) {
             return;
         }
         // right side collision
-        if (!wasIntersectingX && pong.ballRectangle.left < this.brickRectangle.right && pong.ballVelocity.x < 0) {
-            pong.ballPos.x = this.brickRectangle.right + pong.ballRectangle.size.x / 2;
-            pong.ballVelocity.x *= -1;
+        if (!wasIntersectingX && pong.ball.ballRectangle.left < this.brickRectangle.right && pong.ball.ballVelocity.x < 0) {
+            pong.ball.ballPos.x = this.brickRectangle.right + pong.ball.ballRectangle.size.x / 2;
+            pong.ball.ballVelocity.x *= -1;
         }
         // left side collision
-        else if (!wasIntersectingX && pong.ballRectangle.right > this.brickRectangle.left && pong.ballVelocity.x > 0) {
-            pong.ballPos.x = this.brickRectangle.left - pong.ballRectangle.size.x / 2;
-            pong.ballVelocity.x *= -1;
+        else if (!wasIntersectingX && pong.ball.ballRectangle.right > this.brickRectangle.left && pong.ball.ballVelocity.x > 0) {
+            pong.ball.ballPos.x = this.brickRectangle.left - pong.ball.ballRectangle.size.x / 2;
+            pong.ball.ballVelocity.x *= -1;
         }
         // bottom side collision
-        if (!wasIntersectingY && pong.ballRectangle.top < this.brickRectangle.bottom && pong.ballVelocity.y < 0) {
-            pong.ballPos.y = this.brickRectangle.bottom + pong.ballRectangle.size.y / 2;
-            pong.ballVelocity.y *= -1;
+        if (!wasIntersectingY && pong.ball.ballRectangle.top < this.brickRectangle.bottom && pong.ball.ballVelocity.y < 0) {
+            pong.ball.ballPos.y = this.brickRectangle.bottom + pong.ball.ballRectangle.size.y / 2;
+            pong.ball.ballVelocity.y *= -1;
         }
         // top side collision
-        else if (!wasIntersectingY && pong.ballRectangle.bottom > this.brickRectangle.top && pong.ballVelocity.y > 0) {
-            pong.ballPos.y = this.brickRectangle.top - pong.ballRectangle.size.y / 2;
-            pong.ballVelocity.y *= -1;
+        else if (!wasIntersectingY && pong.ball.ballRectangle.bottom > this.brickRectangle.top && pong.ball.ballVelocity.y > 0) {
+            pong.ball.ballPos.y = this.brickRectangle.top - pong.ball.ballRectangle.size.y / 2;
+            pong.ball.ballVelocity.y *= -1;
         }
         this.brickHealth -= 1;
 

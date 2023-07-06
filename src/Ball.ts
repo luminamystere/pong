@@ -112,6 +112,6 @@ export default class Ball {
         return new Vector2(Math.ceil(width / 2), Math.ceil(height));
     }
     private getDefaultBallVelocity () {
-        return new Vector2(Math.random() * 10 - 5, -10);
+        return new Vector2(Math.random() * 10 - 5, -7);
     }
 }

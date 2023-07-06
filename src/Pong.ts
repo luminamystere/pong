@@ -12,6 +12,8 @@ export default class Pong {
     public mousePosition?: Vector2.Immutable;
     public mouseVelocity?: Vector2.Immutable;
     public keyboard: Record<string, number> = {};
+    public startTime = Date.now();
+    public currentRow = 0;
 
     public constructor () {
         window.addEventListener("mousemove", event => {
@@ -32,18 +34,32 @@ export default class Pong {
 
     public ball = new Ball();
 
-    public bricks = [
-        new Brick(new Vector2(200, 200)),
-        new Brick(new Vector2(300, 200)),
-        new Brick(new Vector2(400, 200)),
-        new Brick(new Vector2(500, 200)),
-    ];
+    public bricks: Brick[] = [];
 
     public get paddleRectangle () {
         return Rectangle.fromCentre(this.mousePosition ?? Vector2.ZERO, this.paddleSprite.size);
     }
 
-    private lastOnTop?: "paddle" | "ball";
+    public get elapsedTime () {
+        return Date.now() - this.startTime;
+    }
+
+    public spawnBrick (width: number, height: number) {
+        if (!Brick.brickSize.x) {
+            return;
+        }
+
+        if ((this.currentRow * Brick.brickSize.y) - (Brick.brickSpeed * this.elapsedTime) < 0) {
+            const startX = (width / 2) - (Brick.brickSize.x * 4) + Brick.brickSize.x / 2;
+            for (let i = 0; i < 8; i++) {
+                const spawnPosition = new Vector2(startX + Brick.brickSize.x * i, -this.currentRow * Brick.brickSize.y);
+                this.bricks.push(new Brick(spawnPosition, this.currentRow))
+                console.log("spawned brick at ", spawnPosition.xy, Brick.brickSize.xy, this.currentRow);
+            }
+            this.currentRow += 1;
+        }
+    }
+
 
     //score
     public score = 0;
@@ -56,11 +72,13 @@ export default class Pong {
             .copyImmutable();
         this.lastMousePosition = this.mousePosition;
 
+
+        this.spawnBrick(width, height);
+
         const ball = this.ball;
-
         ball.ballPhysicsUpdate(width, height, this);
-        //brick stuff
 
+        //brick stuff
         for (const brick of this.bricks) {
             brick.tryCollide(this);
         }
@@ -68,20 +86,17 @@ export default class Pong {
 
 
         //draw functions
-
         ball.draw(context);
 
         if (this.mousePosition) {
             this.paddleSprite.draw(context, ...this.mousePosition.xy);
         }
+
         for (const brick of this.bricks) {
-            brick.draw(context);
+            brick.draw(context, this.elapsedTime);
         }
+
         this.hud.draw(context, this, width, height);
-
-
-
-
 
     }
 

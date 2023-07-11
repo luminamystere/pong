@@ -65,22 +65,23 @@ export default class Brick {
         }
         // right side collision
         if (!wasIntersectingX && pong.ball.ballRectangle.left < bricktangle.right && pong.ball.ballVelocity.x < 0) {
-            pong.ball.ballPos.x = bricktangle.right + pong.ball.ballRectangle.size.x / 2;
+            pong.ball.ballPos.x = bricktangle.right + pong.ball.ballRectangle.size.x / 2 + 1;
             pong.ball.ballVelocity.x *= -1;
         }
         // left side collision
         else if (!wasIntersectingX && pong.ball.ballRectangle.right > bricktangle.left && pong.ball.ballVelocity.x > 0) {
-            pong.ball.ballPos.x = bricktangle.left - pong.ball.ballRectangle.size.x / 2;
+            pong.ball.ballPos.x = bricktangle.left - pong.ball.ballRectangle.size.x / 2 - 1;
             pong.ball.ballVelocity.x *= -1;
         }
         // bottom side collision
         if (!wasIntersectingY && pong.ball.ballRectangle.top < bricktangle.bottom && pong.ball.ballVelocity.y < 0) {
-            pong.ball.ballPos.y = bricktangle.bottom + pong.ball.ballRectangle.size.y / 2;
+            pong.ball.ballPos.y = bricktangle.bottom + pong.ball.ballRectangle.size.y / 2 + 1;
             pong.ball.ballVelocity.y *= -1;
+            pong.ball.ballVelocity.y += Brick.brickSpeed;
         }
         // top side collision
         else if (!wasIntersectingY && pong.ball.ballRectangle.bottom > bricktangle.top && pong.ball.ballVelocity.y > 0) {
-            pong.ball.ballPos.y = bricktangle.top - pong.ball.ballRectangle.size.y / 2;
+            pong.ball.ballPos.y = bricktangle.top - pong.ball.ballRectangle.size.y / 2 - 1;
             pong.ball.ballVelocity.y *= -1;
         }
         this.brickHealth -= 1;

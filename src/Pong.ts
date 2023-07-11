@@ -26,6 +26,8 @@ export default class Pong {
             delete this.keyboard[event.key]);
 
         document.addEventListener("visibilitychange", () => this.keyboard = {});
+
+        (window as any).pong = this;
     }
 
     public paddleSprite = new Sprite("paddle");

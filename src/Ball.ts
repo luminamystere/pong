@@ -20,8 +20,11 @@ export default class Ball {
 
     public ballPhysicsUpdate (width: number, height: number, pong: Pong) {
         this.ballVelocity.y += 0.07;
-        this.ballVelocity.y *= 0.999;
-        this.ballVelocity.x *= 0.995;
+        if (this.ballVelocity.y > 0) {
+            this.ballVelocity.y *= 0.999
+        }
+        //this.ballVelocity.y *= 0.999999;
+        this.ballVelocity.x *= 0.999;
 
         this.ballPos ??= this.getDefaultBallPosition(width, height);
 
@@ -100,7 +103,8 @@ export default class Ball {
 
             }
         }
-
+        paddleCentreY = pong.mousePosition?.y ?? 0;
+        this.lastOnTop = this.ballPos.y < paddleCentreY ? "ball" : "paddle";
 
     }
 
@@ -113,6 +117,6 @@ export default class Ball {
         return new Vector2(Math.ceil(width / 2), Math.ceil(height));
     }
     private getDefaultBallVelocity () {
-        return new Vector2(Math.random() * 10 - 5, -7);
+        return new Vector2(Math.random() * 2 - 1, -7);
     }
 }

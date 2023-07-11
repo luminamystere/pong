@@ -8,11 +8,11 @@ export default class Brick {
 
     public static readonly brickSprites = [
         new Sprite("brickDamage3"),
-        new Sprite("brickDamage2"),
-        new Sprite("brickDamage1"),
+        // new Sprite("brickDamage2"),
+        // new Sprite("brickDamage1"),
         new Sprite("brick"),
     ];
-    public brickHealth = 3;
+    public brickHealth = 1;
     public intersectingX = false;
     public intersectingY = false;
     public brickScore = 100;
@@ -27,7 +27,7 @@ export default class Brick {
 
     // accessors
     public get brickSprite () {
-        return Brick.brickSprites[Math2.clamp(0, 3, this.brickHealth)];
+        return Brick.brickSprites[Math2.clamp(0, Brick.brickSprites.length - 1, this.brickHealth)];
     }
 
     // methods

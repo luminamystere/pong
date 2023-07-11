@@ -35,8 +35,8 @@ export default class NumberDisplay {
         const digits: number[] = [];
         while (number || !digits.length) {
             digits.push(number % 10);
-            // number = (Math.floor(number / 10));
-            number = +(number / 10).toFixed(0);
+            number = (Math.floor(number / 10));
+            // number = +(number / 10).toFixed(0);
         }
         const width = size.x * digits.length;
         const height = size.y;

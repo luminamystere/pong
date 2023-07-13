@@ -5,6 +5,8 @@ import Sprite from "./Sprite.js";
 import Rectangle from "./utility/Rectangle.js";
 import Vector2 from "./utility/Vector2.js";
 
+const stylesheetElement = document.getElementById("stylesheet") as HTMLLinkElement;
+
 export default class Pong {
 
 
@@ -14,14 +16,20 @@ export default class Pong {
     public keyboard: Record<string, number> = {};
     public startTime = Date.now();
     public currentRow = 0;
+    public gameRunning = true;
 
     public constructor () {
         window.addEventListener("mousemove", event => {
             this.mousePosition = new Vector2.Immutable(Math.ceil(event.clientX / 2), Math.ceil(event.clientY / 2))
         });
 
-        window.addEventListener("keydown", event =>
-            this.keyboard[event.key] = Date.now());
+        window.addEventListener("keydown", event => {
+            this.keyboard[event.key] = Date.now();
+            if (event.key == "F6") {
+                stylesheetElement.href = "index.css?" + Math.random().toString().slice(2);
+            }
+        });
+
         window.addEventListener("keyup", event =>
             delete this.keyboard[event.key]);
 
@@ -56,10 +64,21 @@ export default class Pong {
             for (let i = 0; i < 8; i++) {
                 const spawnPosition = new Vector2(startX + Brick.brickSize.x * i, -this.currentRow * Brick.brickSize.y);
                 this.bricks.push(new Brick(spawnPosition, this.currentRow))
-                console.log("spawned brick at ", spawnPosition.xy, Brick.brickSize.xy, this.currentRow);
+                //console.log("spawned brick at ", spawnPosition.xy, Brick.brickSize.xy, this.currentRow);
             }
             this.currentRow += 1;
         }
+    }
+
+    public gameOver () {
+        this.gameRunning = false;
+        this.bricks.length = 0;
+        const gameOverText = document.createElement('h1');
+        //const divSelect = document.querySelector('body')
+        gameOverText.textContent = ("Game Over!");
+        document.body.append(gameOverText);
+
+
     }
 
 
@@ -75,16 +94,25 @@ export default class Pong {
         this.lastMousePosition = this.mousePosition;
 
 
-        this.spawnBrick(width, height);
+        if (this.gameRunning) {
+            this.spawnBrick(width, height);
+        }
 
         const ball = this.ball;
         ball.ballPhysicsUpdate(width, height, this);
 
         //brick stuff
         for (const brick of this.bricks) {
+            if (brick.getBrickPosition(this.elapsedTime).y > height - brick.brickSprite.size.y / 2) {
+                console.log("ouchies!");
+                this.gameOver();
+            }
             brick.tryCollide(this);
+
         }
         this.bricks = this.bricks.filter(brick => brick.brickHealth > -1);
+
+
 
 
         //draw functions

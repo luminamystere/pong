@@ -39,6 +39,7 @@ export default class Pong {
                 document.getElementById("gameOverOverlay")?.remove();
                 console.log(this.elapsedTime);
                 this.score = 0;
+                this.ball = new Ball();
             }
         });
         window.addEventListener("mouseup", event => {

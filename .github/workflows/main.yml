@@ -32,11 +32,13 @@ jobs:
           npm install
         
       - name: Build
-        run: npm run build
+        run: |
+          cd main
+          npm run build
 
       - name: Clean & copy
         run: |
-          cd ../build
+          cd build
           git rm -rf .
           cd ..
           cp -r main/* build

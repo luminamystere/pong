@@ -14,31 +14,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.4.0
-
-      - name: Install dependencies
-        run: npm install
-        
-      - name: Build
-        run: npm run build
-
       - name: Checkout destination branch
         uses: actions/checkout@v2
         with:
           ref: build
           path: build
+          
+      - name: Checkout main
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          path: main
 
-      - name: Copy
+      - name: Install dependencies
         run: |
-          cd build
+          cd main
+          npm install
+        
+      - name: Build
+        run: npm run build
+
+      - name: Clean & copy
+        run: |
+          cd ../build
           git rm -rf .
-          cp -r ../* .
+          cd ..
+          cp -r main/* build
 
       - name: Commit & push
         run: |
+          cd build
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .

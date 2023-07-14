@@ -21,8 +21,11 @@ export default class Pong {
     public highScoreDisplay = localStorage.getItem("highscore") ?? "0";
     public highScore = parseInt(this.highScoreDisplay);
     public endTime = 0;
+    public leftBounds = 0;
+    public rightBounds = 0;
+    public upperBounds = 0;
 
-    public constructor () {
+    public constructor (width: number, height: number) {
         window.addEventListener("mousemove", event => {
             this.mousePosition = new Vector2.Immutable(Math.ceil(event.clientX / 2), Math.ceil(event.clientY / 2))
         });
@@ -44,9 +47,7 @@ export default class Pong {
                 this.gameRunning = true;
                 this.currentRow = 0;
                 this.startTime = Date.now();
-                console.log("restarted!");
                 document.getElementById("gameOverOverlay")?.remove();
-                console.log(this.elapsedTime);
                 this.score = 0;
                 this.ball = new Ball();
             }
@@ -58,6 +59,7 @@ export default class Pong {
         document.addEventListener("visibilitychange", () => this.keyboard = {});
 
         (window as any).pong = this;
+
     }
 
     public paddleSprite = new Sprite("paddle");
@@ -68,8 +70,23 @@ export default class Pong {
 
     public bricks: Brick[] = [];
 
+
+    public calculateBounds (width: number, height: number) {
+        this.leftBounds = (width / 2) - (Brick.brickSize.x * 3);
+        this.rightBounds = (width / 2) + (Brick.brickSize.x * 3);
+        this.upperBounds = height - (height / 4);
+    }
+
     public get paddleRectangle () {
-        return Rectangle.fromCentre(this.mousePosition ?? Vector2.ZERO, this.paddleSprite.size);
+        return Rectangle.fromCentre(this.paddlePosition ?? Vector2.ZERO, this.paddleSprite.size);
+    }
+
+    public get paddlePosition () {
+        if (this.mousePosition) {
+            return new Vector2(Math.min(Math.max(this.mousePosition?.x, this.leftBounds), this.rightBounds), Math.max(this.upperBounds, this.mousePosition.y));
+        } else {
+            return Vector2.ZERO;
+        }
     }
 
     public get elapsedTime () {
@@ -86,7 +103,6 @@ export default class Pong {
             for (let i = 0; i < 6; i++) {
                 const spawnPosition = new Vector2(startX + Brick.brickSize.x * i, -this.currentRow * Brick.brickSize.y);
                 this.bricks.push(new Brick(spawnPosition, this.currentRow))
-                //console.log("spawned brick at ", spawnPosition.xy, Brick.brickSize.xy, this.currentRow);
             }
             this.currentRow += 1;
         }
@@ -125,6 +141,7 @@ export default class Pong {
             .subtractVector(this.lastMousePosition ?? this.mousePosition)
             .copyImmutable();
         this.lastMousePosition = this.mousePosition;
+        this.calculateBounds(width, height);
 
 
         if (this.gameRunning) {
@@ -163,7 +180,7 @@ export default class Pong {
         ball.draw(context);
 
         if (this.mousePosition) {
-            this.paddleSprite.draw(context, ...this.mousePosition.xy);
+            this.paddleSprite.draw(context, this.paddlePosition.x, this.paddlePosition.y);
         }
 
         for (const brick of this.bricks) {

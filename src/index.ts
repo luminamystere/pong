@@ -21,7 +21,7 @@ resize();
 
 let context: CanvasRenderingContext2D | null = null;
 
-const game = new Pong;
+const game = new Pong(width, height);
 
 function render () {
     context ??= canvas.getContext("2d");

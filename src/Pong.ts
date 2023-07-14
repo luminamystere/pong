@@ -14,9 +14,11 @@ export default class Pong {
     public mousePosition?: Vector2.Immutable;
     public mouseVelocity?: Vector2.Immutable;
     public keyboard: Record<string, number> = {};
+    public mouse: Record<string, number> = {};
     public startTime = Date.now();
     public currentRow = 0;
     public gameRunning = true;
+    public endTime = 0;
 
     public constructor () {
         window.addEventListener("mousemove", event => {
@@ -32,6 +34,22 @@ export default class Pong {
 
         window.addEventListener("keyup", event =>
             delete this.keyboard[event.key]);
+
+        window.addEventListener("mousedown", event => {
+            this.mouse[event.button] ??= Date.now();
+            if (!this.gameRunning) {
+                this.bricks.length = 0;
+                this.gameRunning = true;
+                this.currentRow = 0;
+                this.startTime = Date.now();
+                console.log("restarted!");
+                document.getElementById("gameOverText")?.remove();
+                console.log(this.elapsedTime);
+            }
+        });
+        window.addEventListener("mouseup", event => {
+            delete this.mouse[event.button];
+        });
 
         document.addEventListener("visibilitychange", () => this.keyboard = {});
 
@@ -59,7 +77,7 @@ export default class Pong {
             return;
         }
 
-        if ((this.currentRow * Brick.brickSize.y) - (Brick.brickSpeed * this.elapsedTime) < 0) {
+        if ((this.currentRow * Brick.brickSize.y) - Brick.brickSize.y / 2 - (Brick.brickSpeed * this.elapsedTime) < 0) {
             const startX = (width / 2) - (Brick.brickSize.x * 4) + Brick.brickSize.x / 2;
             for (let i = 0; i < 8; i++) {
                 const spawnPosition = new Vector2(startX + Brick.brickSize.x * i, -this.currentRow * Brick.brickSize.y);
@@ -72,8 +90,9 @@ export default class Pong {
 
     public gameOver () {
         this.gameRunning = false;
-        this.bricks.length = 0;
+        //this.bricks.length = 0;
         const gameOverText = document.createElement('h1');
+        gameOverText.setAttribute("id", "gameOverText");
         //const divSelect = document.querySelector('body')
         gameOverText.textContent = ("Game Over!");
         document.body.append(gameOverText);
@@ -96,6 +115,11 @@ export default class Pong {
 
         if (this.gameRunning) {
             this.spawnBrick(width, height);
+        } else {
+            for (const brick of this.bricks) {
+                brick.draw(context, this.endTime);
+            }
+            return;
         }
 
         const ball = this.ball;
@@ -105,7 +129,9 @@ export default class Pong {
         for (const brick of this.bricks) {
             if (brick.getBrickPosition(this.elapsedTime).y > height - brick.brickSprite.size.y / 2) {
                 console.log("ouchies!");
+                this.endTime = this.elapsedTime;
                 this.gameOver();
+                return;
             }
             brick.tryCollide(this);
 

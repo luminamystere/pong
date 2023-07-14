@@ -19,5 +19,20 @@ h1 {
     background: rgba(0, 0, 0, 0.6);
     background-blend-mode: darken;
     padding-top: 50px;
+}
 
+h3 {
+    position: absolute;
+    top: 60%;
+    width: 100%;
+    text-align: center;
+    color: antiquewhite;
+}
+
+h4 {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    color: antiquewhite;
 }

@@ -18,6 +18,8 @@ export default class Pong {
     public startTime = Date.now();
     public currentRow = 0;
     public gameRunning = true;
+    public highScoreDisplay = localStorage.getItem("highscore") ?? "0";
+    public highScore = parseInt(this.highScoreDisplay);
     public endTime = 0;
 
     public constructor () {
@@ -43,8 +45,9 @@ export default class Pong {
                 this.currentRow = 0;
                 this.startTime = Date.now();
                 console.log("restarted!");
-                document.getElementById("gameOverText")?.remove();
+                document.getElementById("gameOverOverlay")?.remove();
                 console.log(this.elapsedTime);
+                this.score = 0;
             }
         });
         window.addEventListener("mouseup", event => {
@@ -91,11 +94,21 @@ export default class Pong {
     public gameOver () {
         this.gameRunning = false;
         //this.bricks.length = 0;
+        const gameOverOverlay = document.createElement("div");
+        gameOverOverlay.setAttribute("id", "gameOverOverlay");
         const gameOverText = document.createElement('h1');
         gameOverText.setAttribute("id", "gameOverText");
-        //const divSelect = document.querySelector('body')
         gameOverText.textContent = ("Game Over!");
-        document.body.append(gameOverText);
+        const scoreText = document.createElement("h4");
+        scoreText.setAttribute("id", "score");
+        scoreText.textContent = ("Score: " + this.score);
+        const clickText = document.createElement("h3");
+        clickText.setAttribute("id", "clickToContinue");
+        clickText.textContent = ("Click to Restart!");
+        gameOverOverlay.append(gameOverText, scoreText, clickText);
+
+
+        document.body.append(gameOverOverlay);
 
 
     }
@@ -139,6 +152,10 @@ export default class Pong {
         this.bricks = this.bricks.filter(brick => brick.brickHealth > -1);
 
 
+        if (this.score >= this.highScore) {
+            this.highScore = this.score;
+            localStorage.setItem("highscore", this.highScore.toString());
+        }
 
 
         //draw functions
@@ -151,6 +168,7 @@ export default class Pong {
         for (const brick of this.bricks) {
             brick.draw(context, this.elapsedTime);
         }
+
 
         this.hud.draw(context, this, width, height);
 

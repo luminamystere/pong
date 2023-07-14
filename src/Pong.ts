@@ -74,7 +74,7 @@ export default class Pong {
     public calculateBounds (width: number, height: number) {
         this.leftBounds = (width / 2) - (Brick.brickSize.x * 3);
         this.rightBounds = (width / 2) + (Brick.brickSize.x * 3);
-        this.upperBounds = height - (height / 4);
+        this.upperBounds = height - (height / 3);
     }
 
     public get paddleRectangle () {

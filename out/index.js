@@ -13,7 +13,7 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 let context = null;
-const game = new Pong;
+const game = new Pong(width, height);
 function render() {
     context ??= canvas.getContext("2d");
     requestAnimationFrame(render);

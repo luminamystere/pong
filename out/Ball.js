@@ -49,7 +49,7 @@ export default class Ball {
             return;
         }
         const lastOnTop = this.lastOnTop;
-        let paddleCentreY = pong.mousePosition?.y ?? 0;
+        let paddleCentreY = pong.paddlePosition.y ?? 0;
         this.lastOnTop = this.ballPos.y < paddleCentreY ? "ball" : "paddle";
         //paddle intersection
         const ballRectangle = this.ballRectangle;
@@ -58,7 +58,7 @@ export default class Ball {
             && ballRectangle.position.x + ballRectangle.size.x >= paddleRectangle.position.x;
         if (intersectsX) {
             const mouseVelocity = pong.mouseVelocity;
-            const mousePosition = pong.mousePosition;
+            const mousePosition = pong.paddlePosition;
             if (lastOnTop === "paddle" && this.ballPos.y < paddleCentreY) {
                 //you hit it down
                 this.ballPos.y = mousePosition.y + Math.floor(pong.paddleSprite.size.y / 2) + this.ballRadius;
@@ -82,7 +82,7 @@ export default class Ball {
                 this.ballVelocity.y = Math.min(this.ballVelocity.y, pong.mouseVelocity.y * 0.3);
             }
         }
-        paddleCentreY = pong.mousePosition?.y ?? 0;
+        paddleCentreY = pong.paddlePosition.y ?? 0;
         this.lastOnTop = this.ballPos.y < paddleCentreY ? "ball" : "paddle";
     }
     draw(context) {

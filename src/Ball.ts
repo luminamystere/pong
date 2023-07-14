@@ -32,14 +32,14 @@ export default class Ball {
 
         const ballRadius = this.ballRadius;
 
-        if (this.ballPos.x - ballRadius < (width / 2 - Brick.brickSize.x * 4)) {
+        if (this.ballPos.x - ballRadius < (width / 2 - Brick.brickSize.x * 3)) {
             // the ball is past the left side of the screen, reset its position back onto the screen
             //this.ballPos.x = 0 + ballRadius;
             if (this.ballVelocity.x < 0) {
                 this.ballVelocity.x *= -1;
             }
         }
-        if (this.ballPos.x + ballRadius > (width / 2 + Brick.brickSize.x * 4)) {
+        if (this.ballPos.x + ballRadius > (width / 2 + Brick.brickSize.x * 3)) {
             // the ball is past the right side of the screen, reset its position back onto the screen
             //this.ballPos.x = width - ballRadius;
             if (this.ballVelocity.x > 0) {

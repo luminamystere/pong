@@ -31,5 +31,6 @@ jobs:
         with:
           target_branch: build
           jekyll: false
+          build_dir: .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

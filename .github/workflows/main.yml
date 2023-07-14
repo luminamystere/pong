@@ -24,13 +24,23 @@ jobs:
         
       - name: Build
         run: npm run build
-      
-      - name: Deploy to GitHub Pages
-        if: success()
-        uses: crazy-max/ghaction-github-pages@v2
+
+      - name: Checkout destination branch
+        uses: actions/checkout@v2
         with:
-          target_branch: build
-          jekyll: false
-          build_dir: .
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ref: build
+          path: build
+
+      - name: Copy
+        run: |
+          cd build
+          git rm -rf .
+          cp -r ../* .
+
+      - name: Commit & push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update from ${{ github.ref }}"
+          git push

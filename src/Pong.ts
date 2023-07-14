@@ -82,7 +82,7 @@ export default class Pong {
 
         if ((this.currentRow * Brick.brickSize.y) - Brick.brickSize.y / 2 - (Brick.brickSpeed * this.elapsedTime) < 0) {
             const startX = (width / 2) - (Brick.brickSize.x * 4) + Brick.brickSize.x / 2;
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 6; i++) {
                 const spawnPosition = new Vector2(startX + Brick.brickSize.x * i, -this.currentRow * Brick.brickSize.y);
                 this.bricks.push(new Brick(spawnPosition, this.currentRow))
                 //console.log("spawned brick at ", spawnPosition.xy, Brick.brickSize.xy, this.currentRow);
